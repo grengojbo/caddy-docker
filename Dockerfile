@@ -21,7 +21,7 @@ RUN VERSION=${version} PLUGINS=${plugins} ENABLE_TELEMETRY=${enable_telemetry} /
 FROM alpine:3.10
 LABEL maintainer "Abiola Ibrahim <abiola89@gmail.com>"
 
-ARG version="1.0.3"
+ARG version="1.0.4"
 LABEL caddy_version="$version"
 
 # Let's Encrypt Agreement
@@ -53,6 +53,8 @@ COPY index.html /srv/index.html
 
 # install process wrapper
 COPY --from=builder /go/bin/parent /bin/parent
+
+ENV TZ=Europe/Kiev
 
 ENTRYPOINT ["/bin/parent", "caddy"]
 CMD ["--conf", "/etc/Caddyfile", "--log", "stdout", "--agree=$ACME_AGREE"]
