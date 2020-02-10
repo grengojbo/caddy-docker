@@ -21,6 +21,7 @@ BIN_NAME=$(shell basename $(abspath ./))
 
 # Project name for bintray
 PROJECT_NAME=$(shell basename $(abspath ./))
+IMAGE_MANE=caddy
 PROJECT_DIR=$(shell pwd)
 
 # Project url used for builds
@@ -44,27 +45,32 @@ help:
 
 
 clean:
-	docker rmi -f $(REPO_URL)/$(PROJECT_NAME):$(TAG)
+	docker rmi -f $(REPO_URL)/$(IMAGE_MANE):$(TAG)
 	docker system prune -f
 
 push:
-	docker push $(REPO_URL)/$(PROJECT_NAME):$(TAG)
+	docker push $(REPO_URL)/$(IMAGE_MANE):$(TAG)
+	docker push $(REPO_URL)/$(IMAGE_MANE):latest
 
 push-buildr:
-	docker push $(REPO_URL)/$(REPO_URL)/caddy:builder
+	docker push $(REPO_URL)/$(IMAGE_MANE):builder
 
 pull:
-	docker pull $(REPO_URL)/$(PROJECT_NAME):${TAG}
+	docker pull $(REPO_URL)/$(IMAGE_MANE):${TAG}
 
 build-builder:
-	docker build --tag=$(REPO_URL)/caddy:builder ./builder/
+	docker build --tag=$(REPO_URL)/$(IMAGE_MANE):builder ./builder/
 
 build:
-	docker build --tag=$(REPO_URL)/$(PROJECT_NAME):$(TAG) .
+	docker build --tag=$(REPO_URL)/$(IMAGE_MANE):$(TAG) .
+	docker tag $(REPO_URL)/$(IMAGE_MANE):$(TAG) $(REPO_URL)/$(IMAGE_MANE):latest
+
+release: build-builder push-buildr build push
+	@echo "push $(REPO_URL)/$(IMAGE_MANE):$(TAG) Ok.."
 
 # Attach a root terminal to an already running dev shell
 shell: pull
-	docker run -it --rm $(REPO_URL)/$(PROJECT_NAME):$(TAG) zsh
+	docker run -it --rm $(REPO_URL)/$($(IMAGE_MANE)):$(TAG) zsh
 
 version:
 	@echo ${VERSION}
