@@ -1,10 +1,13 @@
 #
 # Builder
 #
-FROM abiosoft/caddy:builder as builder
+FROM grengojbo/caddy:builder as builder
 
-ARG version="1.0.3"
-ARG plugins="cors,realip,expires,cache,ipfilter"
+ARG version="1.0.4"
+#ARG plugins="cors,realip,expires,cache,ipfilter"
+ARG plugins="authz,cache,cors,datadog,expires,filter,forwardproxy,geoip,git,grpc,ipfilter,jwt,locale,login,nobots,permission,prometheus,ratelimit,realip,recaptcha,s3browser"
+#minify,
+#tls.dns.cloudflare,tls.dns.route53
 ARG enable_telemetry="false"
 
 # process wrapper
